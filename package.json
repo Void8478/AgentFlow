@@ -1,0 +1,32 @@
+{
+  "name": "agentflow-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Production-grade monorepo for AgentFlow - Visual AI Multi-Agent Orchestration Platform",
+  "workspaces": [
+    "apps/web"
+  ],
+  "scripts": {
+    "web:dev": "npm run dev --workspace=web",
+    "web:build": "npm run build --workspace=web",
+    "web:lint": "npm run lint --workspace=web",
+    "api:install": "pip install -r apps/api/requirements.txt",
+    "api:test": "cd apps/api && python -m pytest",
+    "api:start": "cd apps/api && python -m uvicorn app.main:app --reload --port 8000",
+    "setup": "npm install && npm run api:install",
+    "test": "npm run web:lint && npm run api:test",
+    "build": "npm run web:build"
+  },
+  "keywords": [
+    "ai",
+    "agents",
+    "orchestrator",
+    "nextjs",
+    "fastapi",
+    "ollama",
+    "supabase",
+    "react-flow"
+  ],
+  "author": "Void8478",
+  "license": "MIT"
+}
