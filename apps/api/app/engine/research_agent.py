@@ -2,8 +2,7 @@ import json
 import re
 import logging
 from typing import List, Dict, Any, Optional
-from app.services.ollama_service import ollama_service, OllamaServiceError
-from app.domain.ollama_schemas import OllamaGenerateRequest
+from app.services.ai_providers.factory import ai_provider
 from app.domain.tools import BaseTool, WebSearchToolInterface
 from app.domain.research_schemas import (
     ResearchRequest,
@@ -53,7 +52,7 @@ class ResearchAgent:
 
     async def execute_research(self, req: ResearchRequest) -> ResearchResponse:
         """
-        Executes deep technical research on a topic using tools and Ollama LLM synthesis.
+        Executes deep technical research on a topic using tools and unified AI Provider synthesis.
         """
         context_data = ""
         references: List[str] = []
@@ -75,17 +74,15 @@ class ResearchAgent:
         if context_data:
             prompt += f"\nExternal Search Context:\n{context_data}\n"
 
-        gen_req = OllamaGenerateRequest(
-            model=req.model or "llama3:latest",
-            prompt=prompt,
-            system=self.SYSTEM_PROMPT,
-            temperature=0.2,
-            timeout=req.timeout,
-        )
-
         try:
-            raw_res = await ollama_service.generate_completion(gen_req)
-            response_text = raw_res.get("response", "")
+            response_text = await ai_provider.generate_completion(
+                prompt=prompt,
+                system_prompt=self.SYSTEM_PROMPT,
+                model=req.model,
+                temperature=0.2,
+                json_output=True,
+                timeout=req.timeout,
+            )
             summary, findings, parsed_refs = self._parse_json_research(response_text)
 
             combined_refs = list(set(references + parsed_refs))
@@ -98,8 +95,8 @@ class ResearchAgent:
                 references=combined_refs,
             )
 
-        except OllamaServiceError as err:
-            logger.error(f"Ollama research synthesis failed: {err}")
+        except Exception as err:
+            logger.error(f"Research synthesis failed: {err}")
             raise ResearchAgentError(f"Research synthesis error: {err}")
 
     def _parse_json_research(self, raw_text: str):

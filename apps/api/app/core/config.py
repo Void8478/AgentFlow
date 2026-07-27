@@ -22,6 +22,11 @@ class Settings(BaseSettings):
     SUPABASE_URL: str = ""
     SUPABASE_KEY: str = ""
 
+    # AI Provider Settings
+    AI_PROVIDER: str = "ollama"  # "ollama" or "gemini"
+    GEMINI_API_KEY: str = ""
+    GEMINI_MODEL: str = "gemini-2.5-flash"
+
     # ChromaDB Settings
     CHROMADB_HOST: str = "localhost"
     CHROMADB_PORT: int = 8000

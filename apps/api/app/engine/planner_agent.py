@@ -3,8 +3,7 @@ import re
 import logging
 from typing import List, Dict, Set
 from collections import deque
-from app.services.ollama_service import ollama_service, OllamaServiceError
-from app.domain.ollama_schemas import OllamaGenerateRequest
+from app.services.ai_providers.factory import ai_provider
 from app.domain.planner_schemas import (
     PlannerRequest,
     PlannerResponse,
@@ -50,24 +49,22 @@ class PlannerAgent:
 
     async def create_plan(self, req: PlannerRequest) -> PlannerResponse:
         """
-        Decomposes a user request into structured tasks using Ollama LLM and computes topological execution order.
+        Decomposes a user request into structured tasks using unified AI Provider and computes topological execution order.
         """
         prompt = (
             f"User Goal: {req.user_prompt}\n"
             f"Generate a task decomposition with a maximum of {req.max_tasks} tasks."
         )
 
-        gen_req = OllamaGenerateRequest(
-            model=req.model or "llama3:latest",
-            prompt=prompt,
-            system=self.SYSTEM_PROMPT,
-            temperature=0.2,  # Low temperature for deterministic JSON output
-            timeout=req.timeout,
-        )
-
         try:
-            raw_res = await ollama_service.generate_completion(gen_req)
-            response_text = raw_res.get("response", "")
+            response_text = await ai_provider.generate_completion(
+                prompt=prompt,
+                system_prompt=self.SYSTEM_PROMPT,
+                model=req.model,
+                temperature=0.2,  # Low temperature for deterministic JSON output
+                json_output=True,
+                timeout=req.timeout,
+            )
             tasks = self._parse_json_tasks(response_text)
 
             if not tasks:
@@ -92,9 +89,9 @@ class PlannerAgent:
                 execution_order=execution_order,
             )
 
-        except OllamaServiceError as err:
-            logger.error(f"Ollama planning failed: {err}")
-            raise PlannerAgentError(f"Ollama LLM planning error: {err}")
+        except Exception as err:
+            logger.error(f"Planning failed: {err}")
+            raise PlannerAgentError(f"LLM planning error: {err}")
 
     def _parse_json_tasks(self, raw_text: str) -> List[PlannedTask]:
         """

@@ -10,3 +10,4 @@ python-dotenv>=1.0.1
 supabase>=2.3.0
 pytest>=8.0.0
 pytest-asyncio>=0.23.0
+google-genai>=0.1.1

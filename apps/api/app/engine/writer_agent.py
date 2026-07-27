@@ -1,8 +1,7 @@
 import re
 import logging
 from typing import Optional
-from app.services.ollama_service import ollama_service, OllamaServiceError
-from app.domain.ollama_schemas import OllamaGenerateRequest
+from app.services.ai_providers.factory import ai_provider
 from app.domain.writer_schemas import WriterRequest, WriterResponse
 
 logger = logging.getLogger("agentflow.engine.writer")
@@ -27,7 +26,7 @@ class WriterAgent:
 
     async def generate_document(self, req: WriterRequest) -> WriterResponse:
         """
-        Synthesizes technical research inputs into a publication-ready Markdown document.
+        Synthesizes technical research inputs into a publication-ready Markdown document using unified AI Provider.
         """
         prompt = f"# Document Topic: {req.topic}\n\n"
         if req.research_summary:
@@ -40,17 +39,16 @@ class WriterAgent:
             "table, list, and code block formatting requirements."
         )
 
-        gen_req = OllamaGenerateRequest(
-            model=req.model or "llama3:latest",
-            prompt=prompt,
-            system=self.SYSTEM_PROMPT,
-            temperature=0.4,
-            timeout=req.timeout or 90.0,
-        )
-
         try:
-            raw_res = await ollama_service.generate_completion(gen_req)
-            markdown_content = raw_res.get("response", "").strip()
+            markdown_content = await ai_provider.generate_completion(
+                prompt=prompt,
+                system_prompt=self.SYSTEM_PROMPT,
+                model=req.model,
+                temperature=0.4,
+                json_output=False,
+                timeout=req.timeout or 90.0,
+            )
+            markdown_content = markdown_content.strip()
 
             # Clean markdown if model added outer block wrappers
             markdown_content = self._clean_markdown_output(markdown_content)
@@ -64,8 +62,8 @@ class WriterAgent:
                 word_count=word_count,
             )
 
-        except OllamaServiceError as err:
-            logger.error(f"Ollama document generation failed: {err}")
+        except Exception as err:
+            logger.error(f"Document generation failed: {err}")
             raise WriterAgentError(f"Document synthesis error: {err}")
 
     def _clean_markdown_output(self, raw_text: str) -> str:

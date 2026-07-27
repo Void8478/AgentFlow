@@ -2,8 +2,7 @@ import json
 import re
 import logging
 from typing import Tuple, List
-from app.services.ollama_service import ollama_service, OllamaServiceError
-from app.domain.ollama_schemas import OllamaGenerateRequest
+from app.services.ai_providers.factory import ai_provider
 from app.domain.critic_schemas import (
     CriticRequest,
     CriticResponse,
@@ -49,7 +48,7 @@ class CriticAgent:
     async def evaluate_content(self, req: CriticRequest) -> CriticResponse:
         """
         Audits generated content for accuracy, completeness, formatting, and hallucination risk,
-        returning scores and revision instructions.
+        returning scores and revision instructions using unified AI Provider.
         """
         prompt = (
             f"Original Goal / Specification:\n{req.original_prompt}\n\n"
@@ -57,17 +56,15 @@ class CriticAgent:
             "Please perform a thorough audit and return the structured JSON evaluation."
         )
 
-        gen_req = OllamaGenerateRequest(
-            model=req.model or "llama3:latest",
-            prompt=prompt,
-            system=self.SYSTEM_PROMPT,
-            temperature=0.1,  # Low temperature for objective assessment
-            timeout=req.timeout or 60.0,
-        )
-
         try:
-            raw_res = await ollama_service.generate_completion(gen_req)
-            response_text = raw_res.get("response", "")
+            response_text = await ai_provider.generate_completion(
+                prompt=prompt,
+                system_prompt=self.SYSTEM_PROMPT,
+                model=req.model,
+                temperature=0.1,  # Low temperature for objective assessment
+                json_output=True,
+                timeout=req.timeout or 60.0,
+            )
             feedback, metrics, instructions = self._parse_json_evaluation(response_text)
 
             # Compute weighted overall score
@@ -99,8 +96,8 @@ class CriticAgent:
                 revision_count=req.revision_count,
             )
 
-        except OllamaServiceError as err:
-            logger.error(f"Ollama critic evaluation failed: {err}")
+        except Exception as err:
+            logger.error(f"Critic evaluation failed: {err}")
             raise CriticAgentError(f"Evaluation synthesis error: {err}")
 
     def _parse_json_evaluation(

@@ -2,7 +2,8 @@ from fastapi import APIRouter, HTTPException, Depends
 from fastapi.responses import StreamingResponse
 from typing import List, Dict, Any
 import json
-from app.services.ollama_service import ollama_service, OllamaServiceError
+from app.services.ollama_service import ollama_service
+from app.services.ai_providers.factory import ai_provider
 from app.domain.ollama_schemas import (
     OllamaModelInfo,
     OllamaGenerateRequest,
@@ -23,11 +24,19 @@ async def list_installed_models():
 @router.post("/generate")
 async def generate_completion(request: OllamaGenerateRequest):
     """
-    Single completion endpoint with configurable timeout.
+    Single completion endpoint using active AI provider with configurable timeout.
     """
     try:
-        return await ollama_service.generate_completion(request)
-    except OllamaServiceError as err:
+        res = await ai_provider.generate_completion(
+            prompt=request.prompt,
+            system_prompt=request.system,
+            model=request.model,
+            temperature=request.temperature or 0.7,
+            json_output=False,
+            timeout=request.timeout,
+        )
+        return {"response": res}
+    except Exception as err:
         raise HTTPException(status_code=504, detail=str(err))
 
 
@@ -35,12 +44,19 @@ async def generate_completion(request: OllamaGenerateRequest):
 async def stream_chat_tokens(request: OllamaChatRequest):
     """
     Real-time token streaming endpoint via SSE (Server-Sent Events) / NDJSON.
-    Supports Cancellation and Custom Timeouts.
+    Supports Cancellation and Custom Timeouts using active AI provider.
     """
 
     async def event_generator():
-        async for chunk in ollama_service.stream_chat(request):
-            yield f"data: {json.dumps(chunk.model_dump())}\n\n"
+        msgs = [{"role": m.role, "content": m.content} for m in request.messages]
+        async for chunk in ai_provider.stream_chat(
+            messages=msgs,
+            system_prompt=request.system_prompt,
+            model=request.model,
+            temperature=request.temperature or 0.7,
+            timeout=request.timeout,
+        ):
+            yield f"data: {json.dumps(chunk)}\n\n"
 
     return StreamingResponse(
         event_generator(),

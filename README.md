@@ -187,11 +187,28 @@ cp apps/api/.env.example apps/api/.env
 
 ### 4. Running the Application
 
-#### Start Ollama Service
-```bash
-ollama pull llama3:latest
-ollama serve
-```
+#### Setup AI Provider (Choose Ollama or Google Gemini)
+
+##### Option A: Local Ollama Engine (Default)
+1. Download and start Ollama from [ollama.com](https://ollama.com).
+2. Pull the default model:
+   ```bash
+   ollama pull llama3:latest
+   ollama serve
+   ```
+3. Set environment variables in `apps/api/.env`:
+   ```env
+   AI_PROVIDER=ollama
+   ```
+
+##### Option B: Google Gemini API (Recommended for Production)
+1. Get a Gemini API key from Google AI Studio.
+2. Set environment variables in `apps/api/.env`:
+   ```env
+   AI_PROVIDER=gemini
+   GEMINI_MODEL=gemini-2.5-flash
+   GEMINI_API_KEY=your_actual_gemini_api_key_here
+   ```
 
 #### Start FastAPI Backend Server
 ```bash
@@ -218,7 +235,7 @@ Run the automated backend pytest suite:
 cd apps/api
 python -m pytest
 ```
-- **Test Result**: `18 passed in 1.45s (100% success rate)`
+- **Test Result**: `21 passed in 4.65s (100% success rate)`
 
 ---
 

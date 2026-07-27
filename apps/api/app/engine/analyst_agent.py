@@ -2,8 +2,7 @@ import json
 import re
 import logging
 from typing import List, Dict, Any, Tuple
-from app.services.ollama_service import ollama_service, OllamaServiceError
-from app.domain.ollama_schemas import OllamaGenerateRequest
+from app.services.ai_providers.factory import ai_provider
 from app.domain.analyst_schemas import (
     AnalystRequest,
     AnalystResponse,
@@ -55,17 +54,15 @@ class AnalystAgent:
         input_data_str = json.dumps(req.raw_research_data, indent=2)
         prompt = f"Raw Research Dataset to Analyze:\n{input_data_str}\n"
 
-        gen_req = OllamaGenerateRequest(
-            model=req.model or "llama3:latest",
-            prompt=prompt,
-            system=self.SYSTEM_PROMPT,
-            temperature=0.1,  # Strict analytical temperature
-            timeout=req.timeout,
-        )
-
         try:
-            raw_res = await ollama_service.generate_completion(gen_req)
-            response_text = raw_res.get("response", "")
+            response_text = await ai_provider.generate_completion(
+                prompt=prompt,
+                system_prompt=self.SYSTEM_PROMPT,
+                model=req.model,
+                temperature=0.1,  # Strict analytical temperature
+                json_output=True,
+                timeout=req.timeout,
+            )
             merged_facts, contradictions, takeaways = self._parse_json_analysis(response_text)
 
             # Calculate weighted overall confidence score
@@ -79,8 +76,8 @@ class AnalystAgent:
                 synthesized_takeaways=takeaways,
             )
 
-        except OllamaServiceError as err:
-            logger.error(f"Ollama analytical reasoning failed: {err}")
+        except Exception as err:
+            logger.error(f"Analytical reasoning failed: {err}")
             raise AnalystAgentError(f"Analytical processing error: {err}")
 
     def _calculate_overall_confidence(
