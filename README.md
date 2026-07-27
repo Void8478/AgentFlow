@@ -1,7 +1,7 @@
 # 🚀 AgentFlow — Visual AI Multi-Agent Orchestration Platform
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Build-Passing-emerald?style=for-the-badge&logo=github-actions" alt="Build Status" />
+  <a href="https://github.com/Void8478/AgentFlow"><img src="https://img.shields.io/badge/Build-Passing-brightgreen?style=for-the-badge&logo=github-actions" alt="Build Status" /></a>
   <img src="https://img.shields.io/badge/Next.js-16.2.12-black?style=for-the-badge&logo=nextdotjs" alt="Next.js" />
   <img src="https://img.shields.io/badge/FastAPI-0.140.0-009688?style=for-the-badge&logo=fastapi" alt="FastAPI" />
   <img src="https://img.shields.io/badge/Supabase-Auth_%26_RLS-3FCF8E?style=for-the-badge&logo=supabase" alt="Supabase" />
@@ -134,7 +134,7 @@ AgentFlow/
 
 #### A. Clone Repository
 ```bash
-git clone https://github.com/agentflow/agentflow.git
+git clone https://github.com/Void8478/AgentFlow.git
 cd AgentFlow
 ```
 
@@ -227,3 +227,5 @@ Distributed under the **MIT License**. See `LICENSE` for details.
 ## 🌟 Star the Repository
 
 If you find AgentFlow useful, give our repository a ⭐️ on GitHub!
+
+👉 **[github.com/Void8478/AgentFlow](https://github.com/Void8478/AgentFlow)**
