@@ -76,7 +76,7 @@ export function Hero() {
         </Link>
 
         <a
-          href="https://github.com"
+          href="https://github.com/Void8478/AgentFlow"
           target="_blank"
           rel="noopener noreferrer"
           className="w-full sm:w-auto py-3.5 px-7 rounded-xl font-semibold text-sm bg-white/5 hover:bg-white/10 text-slate-200 border border-white/10 transition-all flex items-center justify-center gap-2 active:scale-95"

@@ -93,6 +93,20 @@ graph TD
 
 ---
 
+## 📖 Reference Documentation
+
+Explore the sub-folders for deep dives into AgentFlow's technical design, API specifications, and operational workflows:
+
+*   [🏗️ System Architecture & Data Flow](docs/architecture.md): Topology diagrams, component layers, and message flow sequences.
+*   [🚀 REST API Specification](docs/api.md): Detailed API endpoints, schemas, request/response models, and error payloads.
+*   [🤖 Specialized AI Agents](docs/agents.md): Agent definitions (Planner, Research, Analyst, Writer, Critic) and the Writer-Critic loop.
+*   [🗄️ Database Schema & RLS Policies](docs/database.md): Entity-relationship diagrams, index optimizations, and Row Level Security.
+*   [⚡ WebSocket Streaming Protocol](docs/websocket.md): Event message payloads, token streaming, and reconnection timers.
+*   [📦 Production Deployment Reference](docs/deployment.md): Next.js to Vercel, FastAPI to Docker, and Supabase migration guides.
+*   [🗺️ Project Roadmap](docs/roadmap.md): Core orchestration, UI/UX configurations, and database integrations roadmap.
+
+---
+
 ## 📂 Folder Structure
 
 ```

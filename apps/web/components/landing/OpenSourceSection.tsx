@@ -33,7 +33,7 @@ export function OpenSourceSection() {
           {/* GitHub CTA */}
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
             <a
-              href="https://github.com"
+              href="https://github.com/Void8478/AgentFlow"
               target="_blank"
               rel="noopener noreferrer"
               className="w-full sm:w-auto py-3.5 px-8 rounded-xl font-semibold text-sm bg-white text-slate-950 hover:bg-slate-200 transition-all flex items-center justify-center gap-2 shadow-xl shadow-white/10 active:scale-95"
@@ -43,7 +43,7 @@ export function OpenSourceSection() {
             </a>
 
             <a
-              href="https://github.com"
+              href="https://github.com/Void8478/AgentFlow/tree/main/docs"
               target="_blank"
               rel="noopener noreferrer"
               className="w-full sm:w-auto py-3.5 px-7 rounded-xl font-semibold text-sm bg-white/5 hover:bg-white/10 text-slate-200 border border-white/10 transition-all flex items-center justify-center gap-2 active:scale-95"

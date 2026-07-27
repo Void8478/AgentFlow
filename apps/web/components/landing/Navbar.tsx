@@ -73,7 +73,7 @@ export function Navbar() {
         {/* Desktop Action Buttons */}
         <div className="hidden md:flex items-center gap-3">
           <a
-            href="https://github.com"
+            href="https://github.com/Void8478/AgentFlow"
             target="_blank"
             rel="noopener noreferrer"
             className="py-2 px-3.5 rounded-xl text-xs font-medium bg-white/5 hover:bg-white/10 text-slate-200 border border-white/10 transition-all flex items-center gap-2"
@@ -145,7 +145,7 @@ export function Navbar() {
 
             <div className="pt-3 border-t border-white/10 flex flex-col gap-2.5">
               <a
-                href="https://github.com"
+                href="https://github.com/Void8478/AgentFlow"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full py-2.5 px-4 rounded-xl text-xs font-medium bg-white/5 text-slate-200 border border-white/10 flex items-center justify-center gap-2"
