@@ -1,0 +1,177 @@
+@import "tailwindcss";
+
+:root {
+  /* Canvas & Surface Variables */
+  --canvas-base: #07080a;
+  --surface-panel: rgba(15, 17, 23, 0.75);
+  --surface-panel-hover: rgba(24, 27, 36, 0.85);
+  --surface-overlay: rgba(6, 7, 9, 0.90);
+  --surface-input: rgba(0, 0, 0, 0.40);
+
+  /* Border Tokens */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-interactive: rgba(255, 255, 255, 0.18);
+  --border-focus: #6366f1;
+
+  /* Typography & Foreground Tokens */
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-accent: #6366f1;
+
+  /* Node Branding Tokens */
+  --node-agent: #6366f1;
+  --node-tool: #10b981;
+  --node-input: #8b5cf6;
+  --node-output: #f59e0b;
+  --node-router: #ec4899;
+
+  /* Status Colors */
+  --status-idle: #64748b;
+  --status-running: #f59e0b;
+  --status-completed: #10b981;
+  --status-failed: #f43f5e;
+
+  /* Shadows & Glows */
+  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  --shadow-glow-indigo: 0 0 20px rgba(99, 102, 241, 0.35);
+  --shadow-glow-amber: 0 0 20px rgba(245, 158, 11, 0.35);
+}
+
+body {
+  background-color: var(--canvas-base);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* GPU Hardware Acceleration & Layer Compositing */
+.hardware-accelerated {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Glassmorphism Panels (Apple + Raycast) */
+.glass-panel {
+  background: var(--surface-panel);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-subtle);
+}
+
+.glass-panel-interactive {
+  background: var(--surface-panel);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-subtle);
+  transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-panel-interactive:hover {
+  background: var(--surface-panel-hover);
+  border-color: var(--border-interactive);
+  box-shadow: var(--shadow-glass);
+}
+
+/* Vercel Grid Background Pattern */
+.bg-grid-pattern {
+  background-size: 24px 24px;
+  background-image: 
+    radial-gradient(circle, rgba(255, 255, 255, 0.08) 1.5px, transparent 1.5px);
+}
+
+/* Micro-Focus & Keybinding Styles (Linear) */
+kbd {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 10px;
+  color: var(--text-secondary);
+}
+
+/* Status Pulse Animation (Mission Control) */
+@keyframes statusPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.95);
+  }
+}
+
+.animate-status-pulse {
+  animation: statusPulse 2s infinite ease-in-out;
+  will-change: opacity, transform;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* React Flow Visual Canvas Theme Overrides */
+.react-flow__background {
+  background: var(--canvas-base) !important;
+}
+
+.react-flow__edge-path {
+  stroke: rgba(255, 255, 255, 0.2) !important;
+  stroke-width: 2px !important;
+}
+
+.react-flow__edge-path.animated {
+  stroke: var(--text-accent) !important;
+  stroke-dasharray: 5;
+}
+
+.react-flow__handle {
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 50% !important;
+  background: var(--text-accent) !important;
+  border: 2px solid var(--canvas-base) !important;
+  transition: transform 150ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.react-flow__handle:hover {
+  transform: scale(1.3);
+  box-shadow: 0 0 10px var(--text-accent);
+}
+
+.react-flow__controls {
+  background: var(--surface-panel) !important;
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: 12px !important;
+  box-shadow: var(--shadow-glass) !important;
+  backdrop-filter: blur(16px) !important;
+}
+
+.react-flow__controls-button {
+  background: transparent !important;
+  border-bottom: 1px solid var(--border-subtle) !important;
+  fill: var(--text-primary) !important;
+}
+
+.react-flow__controls-button:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+}

@@ -1,0 +1,27 @@
+export const SITE_CONFIG = {
+  name: "AgentFlow",
+  tagline: "Visual AI Multi-Agent Orchestration Platform",
+  description:
+    "Production-grade open-source platform where autonomous AI agents collaborate in real time on a visual flow canvas.",
+  version: "1.0.0",
+  urls: {
+    githubRepo: "https://github.com/agentflow/agentflow",
+    githubStar: "https://github.com/agentflow/agentflow/stargazers",
+    githubIssues: "https://github.com/agentflow/agentflow/issues",
+    githubBugReport: "https://github.com/agentflow/agentflow/issues/new?template=bug_report.md",
+    githubFeatureRequest: "https://github.com/agentflow/agentflow/issues/new?template=feature_request.md",
+    githubContribute: "https://github.com/agentflow/agentflow/blob/main/CONTRIBUTING.md",
+    liveDemo: "https://agentflow.dev",
+    documentation: "https://docs.agentflow.dev",
+    apiDocs: "http://localhost:8000/api/v1/docs",
+    frontendUrl: "http://localhost:3000",
+    backendUrl: "http://localhost:8000",
+    discord: "https://discord.gg/agentflow",
+    linkedin: "https://linkedin.com/company/agentflow",
+    portfolio: "https://agentflow.dev/about",
+    supportEmail: "support@agentflow.dev",
+    terms: "/terms",
+    privacy: "/privacy",
+    license: "https://github.com/agentflow/agentflow/blob/main/LICENSE",
+  },
+};
