@@ -1,14 +1,16 @@
 from fastapi import APIRouter, HTTPException
-from fastapi.responses import StreamingResponse
-from typing import List, Dict, Any
+from fastapi.responses import StreamingResponse as FastAPIStreamingResponse
+from typing import List
 import json
 import logging
 from app.core.config import settings
 from app.services.ai_providers.factory import ai_provider
 from app.domain.ai_schemas import (
     AIModelInfo,
-    AIGenerateRequest,
-    AIChatRequest,
+    AIRequest,
+    AIResponse,
+    StreamingRequest,
+    StreamingResponse,
 )
 
 logger = logging.getLogger("agentflow.api.v1.ai")
@@ -20,7 +22,7 @@ router = APIRouter(prefix="/ai", tags=["AI Engine"])
 legacy_router = APIRouter(prefix="/ollama", tags=["AI Engine"])
 
 
-async def execute_generate(request: AIGenerateRequest) -> Dict[str, Any]:
+async def execute_generate(request: AIRequest) -> AIResponse:
     try:
         logger.info(f"AI Generate Completion - Provider: {settings.AI_PROVIDER}, Model: {request.model or ai_provider.default_model}")
         res = await ai_provider.generate_completion(
@@ -31,13 +33,13 @@ async def execute_generate(request: AIGenerateRequest) -> Dict[str, Any]:
             json_output=False,
             timeout=request.timeout,
         )
-        return {"response": res}
+        return AIResponse(response=res)
     except Exception as err:
         logger.error(f"Generation error under provider {settings.AI_PROVIDER}: {err}")
         raise HTTPException(status_code=502, detail=f"Generation failed: {str(err)}")
 
 
-async def execute_stream_chat(request: AIChatRequest) -> StreamingResponse:
+async def execute_stream_chat(request: StreamingRequest) -> FastAPIStreamingResponse:
     logger.info(f"AI Stream Chat - Provider: {settings.AI_PROVIDER}, Model: {request.model or ai_provider.default_model}")
     
     async def event_generator():
@@ -49,9 +51,16 @@ async def execute_stream_chat(request: AIChatRequest) -> StreamingResponse:
             temperature=request.temperature or 0.7,
             timeout=request.timeout,
         ):
-            yield f"data: {json.dumps(chunk)}\n\n"
+            # Validate output matches StreamingResponse structure
+            validated_chunk = StreamingResponse(
+                model=chunk.get("model", request.model or ai_provider.default_model),
+                content=chunk.get("content", ""),
+                done=chunk.get("done", False),
+                error=chunk.get("error"),
+            )
+            yield f"data: {json.dumps(validated_chunk.model_dump())}\n\n"
 
-    return StreamingResponse(
+    return FastAPIStreamingResponse(
         event_generator(),
         media_type="text/event-stream",
         headers={
@@ -108,8 +117,8 @@ async def list_models():
     return await execute_list_models()
 
 
-@router.post("/generate")
-async def generate_completion(request: AIGenerateRequest):
+@router.post("/generate", response_model=AIResponse)
+async def generate_completion(request: AIRequest):
     """
     Generate completion using the active AI Provider.
     """
@@ -117,7 +126,7 @@ async def generate_completion(request: AIGenerateRequest):
 
 
 @router.post("/chat/stream")
-async def stream_chat_tokens(request: AIChatRequest):
+async def stream_chat_tokens(request: StreamingRequest):
     """
     Stream chat tokens using the active AI Provider.
     """
@@ -134,8 +143,8 @@ async def legacy_list_models():
     return await execute_list_models()
 
 
-@legacy_router.post("/generate", deprecated=True)
-async def legacy_generate_completion(request: AIGenerateRequest):
+@legacy_router.post("/generate", response_model=AIResponse, deprecated=True)
+async def legacy_generate_completion(request: AIRequest):
     """
     [Deprecated] Generate completion. Use /api/v1/ai/generate instead.
     """
@@ -143,7 +152,7 @@ async def legacy_generate_completion(request: AIGenerateRequest):
 
 
 @legacy_router.post("/chat/stream", deprecated=True)
-async def legacy_stream_chat_tokens(request: AIChatRequest):
+async def legacy_stream_chat_tokens(request: StreamingRequest):
     """
     [Deprecated] Stream chat. Use /api/v1/ai/chat/stream instead.
     """
