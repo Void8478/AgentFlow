@@ -8,7 +8,7 @@ router = APIRouter(prefix="/planner", tags=["Planner Agent"])
 @router.post("/plan", response_model=PlannerResponse)
 async def create_execution_plan(request: PlannerRequest):
     """
-    Receives user request, uses Ollama LLM to decompose it into logical sub-tasks,
+    Receives user request, uses active AI provider to decompose it into logical sub-tasks,
     and returns a structured JSON plan with topological execution order.
     """
     try:

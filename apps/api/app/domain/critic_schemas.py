@@ -23,7 +23,7 @@ class CriticRequest(BaseModel):
     content_to_evaluate: str = Field(..., description="Generated text or Markdown content to audit")
     revision_count: int = Field(0, ge=0, description="Current revision loop iteration count")
     max_revisions: int = Field(3, ge=1, le=5, description="Maximum allowed revision loops")
-    model: Optional[str] = Field("llama3:latest", description="Ollama model to use for evaluation")
+    model: Optional[str] = Field(None, description="AI model override (defaults to active provider default)")
     timeout: Optional[float] = Field(60.0, description="Evaluation timeout in seconds")
 
 

@@ -12,8 +12,8 @@ class PlannedTask(BaseModel):
         "System Architect",
         description="Suggested agent role, e.g., Code Synthesizer, Researcher",
     )
-    assigned_model: str = Field(
-        "llama3:latest", description="Suggested LLM model for execution"
+    assigned_model: Optional[str] = Field(
+        None, description="Suggested LLM model for execution (defaults to active default)"
     )
     dependencies: List[str] = Field(
         default_factory=list, description="IDs of tasks that must complete first"
@@ -28,7 +28,7 @@ class PlannerRequest(BaseModel):
         ..., description="The user's high-level goal or workflow prompt"
     )
     model: Optional[str] = Field(
-        "llama3:latest", description="Ollama model to use for planning"
+        None, description="AI model override (defaults to active provider default)"
     )
     max_tasks: Optional[int] = Field(5, ge=1, le=10)
     timeout: Optional[float] = Field(60.0, description="Planning timeout in seconds")

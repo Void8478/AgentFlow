@@ -8,7 +8,7 @@ router = APIRouter(prefix="/research", tags=["Research Agent"])
 @router.post("/analyze", response_model=ResearchResponse)
 async def analyze_research_topic(request: ResearchRequest):
     """
-    Executes technical research on a topic using pluggable web tools and Ollama LLM synthesis.
+    Executes technical research on a topic using pluggable web tools and active AI provider synthesis.
     """
     try:
         return await research_agent.execute_research(request)

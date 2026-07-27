@@ -56,7 +56,7 @@ HISTORICAL_RUNS_DB: Dict[str, HistoryItem] = {
     ),
     "run-103": HistoryItem(
         id="run-103",
-        title="Ollama Stream Cancellation Audit",
+        title="AI Stream Cancellation Audit",
         workflow_type="WRITER_CRITIC_ONLY",
         status="FAILED",
         prompt="Audit async socket disconnection during streaming token responses.",

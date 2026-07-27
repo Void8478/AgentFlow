@@ -20,6 +20,7 @@ from app.engine.research_agent import research_agent
 from app.engine.analyst_agent import analyst_agent
 from app.engine.writer_agent import writer_agent
 from app.engine.critic_agent import critic_agent
+from app.services.ai_providers.factory import ai_provider
 
 logger = logging.getLogger("agentflow.engine.orchestrator")
 
@@ -30,7 +31,7 @@ class WorkflowContext:
         self.workflow_type = req.workflow_type
         self.state = WorkflowState.IDLE
         self.user_prompt = req.user_prompt
-        self.model = req.model or "llama3:latest"
+        self.model = req.model or ai_provider.default_model
         self.max_revisions = req.max_revisions
         self.max_retries = req.max_retries
         self.revision_count = 0

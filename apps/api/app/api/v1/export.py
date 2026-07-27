@@ -12,7 +12,7 @@ class ExportRequest(BaseModel):
     workflow_id: str = Field(..., description="Workflow execution ID")
     title: str = Field(..., description="Document title")
     content: str = Field(..., description="Markdown content string")
-    model: Optional[str] = Field("llama3:latest", description="Model used")
+    model: Optional[str] = Field(None, description="Model used")
     include_metadata: bool = Field(True, description="Whether to include YAML metadata header")
     metadata: Optional[Dict[str, Any]] = Field(default_factory=dict)
 

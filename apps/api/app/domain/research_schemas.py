@@ -15,7 +15,7 @@ class ResearchRequest(BaseModel):
     task_id: Optional[str] = Field(None, description="Associated DAG task ID")
     query: str = Field(..., description="Research question or topic query")
     enable_web_search: bool = Field(True, description="Whether to query web-search tool")
-    model: Optional[str] = Field("llama3:latest", description="Ollama model to use")
+    model: Optional[str] = Field(None, description="AI model override (defaults to active provider default)")
     timeout: Optional[float] = Field(60.0, description="Research timeout in seconds")
 
 

@@ -23,7 +23,7 @@ class AnalystRequest(BaseModel):
     raw_research_data: List[Dict[str, Any]] = Field(
         ..., description="List of research findings or text snippets to analyze"
     )
-    model: Optional[str] = Field("llama3:latest", description="Ollama model for analysis")
+    model: Optional[str] = Field(None, description="AI model override (defaults to active provider default)")
     timeout: Optional[float] = Field(60.0, description="Response timeout in seconds")
 
 

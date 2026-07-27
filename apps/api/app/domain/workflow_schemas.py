@@ -38,7 +38,7 @@ class WorkflowStartRequest(BaseModel):
     workflow_type: WorkflowType = Field(
         WorkflowType.FULL_PIPELINE, description="Pipeline topology type"
     )
-    model: Optional[str] = Field("llama3:latest", description="Ollama model to execute")
+    model: Optional[str] = Field(None, description="AI model override (defaults to active provider default)")
     max_revisions: int = Field(3, ge=1, le=5, description="Max revision loop count")
     max_retries: int = Field(3, ge=1, le=5, description="Max step retry count")
 

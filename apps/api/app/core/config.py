@@ -15,8 +15,8 @@ class Settings(BaseSettings):
     ]
 
     # Ollama Settings
-    OLLAMA_HOST: str = "http://localhost:11434"
-    DEFAULT_MODEL: str = "llama3:latest"
+    OLLAMA_BASE_URL: str = "http://localhost:11434"
+    OLLAMA_DEFAULT_MODEL: str = "llama3:latest"
 
     # Supabase Settings
     SUPABASE_URL: str = ""

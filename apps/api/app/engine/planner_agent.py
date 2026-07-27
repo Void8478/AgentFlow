@@ -75,7 +75,7 @@ class PlannerAgent:
                         title="Execute Primary User Request",
                         description=req.user_prompt,
                         agent_role="General AI Agent",
-                        assigned_model=req.model or "llama3:latest",
+                        assigned_model=req.model or ai_provider.default_model,
                         dependencies=[],
                         estimated_complexity="medium",
                     )

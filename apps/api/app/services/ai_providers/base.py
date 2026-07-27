@@ -7,6 +7,21 @@ class BaseAIProvider(ABC):
     All agents interact with this interface rather than invoking specific libraries directly.
     """
 
+    @property
+    @abstractmethod
+    def default_model(self) -> str:
+        """
+        Returns the identifier of the default model configured for this provider.
+        """
+        pass
+
+    @abstractmethod
+    async def check_health(self) -> bool:
+        """
+        Returns True if the provider service is healthy and reachable, False otherwise.
+        """
+        pass
+
     @abstractmethod
     async def generate_completion(
         self,

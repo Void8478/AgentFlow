@@ -1,9 +1,10 @@
 from fastapi import APIRouter
-from app.api.v1 import health, ollama, planner, research, analyst, writer, critic, workflows, ws, history, export, settings
+from app.api.v1 import health, ai, planner, research, analyst, writer, critic, workflows, ws, history, export, settings
 
 api_router = APIRouter()
 api_router.include_router(health.router, tags=["Health"])
-api_router.include_router(ollama.router, tags=["Ollama Engine"])
+api_router.include_router(ai.router)
+api_router.include_router(ai.legacy_router)
 api_router.include_router(planner.router, tags=["Planner Agent"])
 api_router.include_router(research.router, tags=["Research Agent"])
 api_router.include_router(analyst.router, tags=["Analyst Agent"])

@@ -16,9 +16,22 @@ class GeminiProvider(BaseAIProvider):
 
     def __init__(self, api_key: Optional[str] = None, default_model: Optional[str] = None):
         self.api_key = api_key or settings.GEMINI_API_KEY
-        self.default_model = default_model or settings.GEMINI_MODEL
-        # Initialize Google GenAI client
-        self.client = genai.Client(api_key=self.api_key)
+        self._default_model = default_model or settings.GEMINI_MODEL
+        # Initialize Google GenAI client (can succeed with empty key, but calls will fail)
+        self.client = genai.Client(api_key=self.api_key or "MOCK_KEY_FOR_INIT")
+
+    @property
+    def default_model(self) -> str:
+        return self._default_model
+
+    async def check_health(self) -> bool:
+        """
+        Verifies that Gemini API key is configured.
+        """
+        # If the key is not set or is still a placeholder, it's unhealthy
+        if not self.api_key or "your-gemini-api-key" in self.api_key or self.api_key == "MOCK_KEY_FOR_INIT":
+            return False
+        return True
 
     async def generate_completion(
         self,
@@ -33,7 +46,7 @@ class GeminiProvider(BaseAIProvider):
         Generates completion using client.aio.models.generate_content.
         Supports retry policy and timeout config.
         """
-        model_name = model or self.default_model
+        model_name = model or self._default_model
         
         config = types.GenerateContentConfig(
             system_instruction=system_prompt if system_prompt else None,
@@ -46,9 +59,7 @@ class GeminiProvider(BaseAIProvider):
 
         for attempt in range(1, max_retries + 1):
             try:
-                # Wrap call in asyncio.wait_for for strict timeout enforcement
                 gen_timeout = timeout or 60.0
-                
                 logger.info(f"Gemini API calling model {model_name} (attempt {attempt}/{max_retries})")
                 
                 response = await asyncio.wait_for(
@@ -84,7 +95,7 @@ class GeminiProvider(BaseAIProvider):
         Streams chat tokens using client.aio.models.generate_content_stream.
         Matches metadata response format of OllamaStreamChunk.
         """
-        model_name = model or self.default_model
+        model_name = model or self._default_model
 
         # Map messages to official types.Content objects
         contents = []
@@ -107,7 +118,6 @@ class GeminiProvider(BaseAIProvider):
         token_count = 0
 
         try:
-            # Enforce async timeout on the stream connection setup
             stream = await asyncio.wait_for(
                 self.client.aio.models.generate_content_stream(
                     model=model_name,
@@ -118,7 +128,6 @@ class GeminiProvider(BaseAIProvider):
             )
 
             async for chunk in stream:
-                # Check stream total duration
                 if time.time() - start_time > gen_timeout:
                     yield {
                         "model": model_name,

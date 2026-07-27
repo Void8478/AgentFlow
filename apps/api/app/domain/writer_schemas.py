@@ -14,7 +14,7 @@ class WriterRequest(BaseModel):
     )
     include_tables: bool = Field(True, description="Whether to include markdown comparison tables")
     include_code_blocks: bool = Field(True, description="Whether to include code snippets")
-    model: Optional[str] = Field("llama3:latest", description="Ollama model to use")
+    model: Optional[str] = Field(None, description="AI model override (defaults to active provider default)")
     timeout: Optional[float] = Field(90.0, description="Generation timeout in seconds")
 
 
