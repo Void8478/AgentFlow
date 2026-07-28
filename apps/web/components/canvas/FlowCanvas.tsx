@@ -12,7 +12,7 @@ import {
   useReactFlow,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { useFlowStore } from "@/lib/store/useFlowStore";
+import { useFlowStore, type NodeType } from "@/lib/store/useFlowStore";
 import { AgentNode } from "./AgentNode";
 import { ToolNode } from "./ToolNode";
 import { InputNode } from "./InputNode";
@@ -110,7 +110,9 @@ export function FlowCanvas() {
         y: event.clientY - 120,
       };
 
-      addNode(type as any, position);
+      const nodeType = type as NodeType;
+      if (!["agent", "tool", "input", "output", "router"].includes(nodeType)) return;
+      addNode(nodeType, position);
     },
     [addNode]
   );

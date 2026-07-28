@@ -197,7 +197,7 @@ function LoginFormContent() {
 
         {/* Footer Link */}
         <p className="text-center text-xs text-slate-400 mt-6">
-          Don't have an account yet?{" "}
+          Don&apos;t have an account yet?{" "}
           <Link
             href="/register"
             className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors"

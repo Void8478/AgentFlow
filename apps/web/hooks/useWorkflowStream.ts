@@ -9,10 +9,16 @@ export type ConnectionStatus =
   | "reconnecting"
   | "error";
 
+type StreamEventData = {
+  content?: string;
+  tokens_per_sec?: number;
+  state?: string;
+} & Record<string, unknown>;
+
 export interface StreamEvent {
   workflow_id: string;
   event_type: "state_change" | "token_stream" | "step_progress" | "metrics" | "error";
-  data: any;
+  data: StreamEventData;
 }
 
 export function useWorkflowStream(workflowId: string | null) {
@@ -20,7 +26,7 @@ export function useWorkflowStream(workflowId: string | null) {
   const [tokenStream, setTokenStream] = useState<string>("");
   const [currentState, setCurrentState] = useState<string>("IDLE");
   const [tokensPerSec, setTokensPerSec] = useState<number>(0);
-  const [stepLogs, setStepLogs] = useState<any[]>([]);
+  const [stepLogs, setStepLogs] = useState<StreamEventData[]>([]);
 
   const wsRef = useRef<WebSocket | null>(null);
   const heartbeatTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -39,10 +45,15 @@ export function useWorkflowStream(workflowId: string | null) {
     }
   };
 
-  const connect = useCallback(() => {
+  const connect = useCallback(function connect() {
     if (!workflowId) return;
 
     clearTimers();
+    if (reconnectAttemptsRef.current === 0) {
+      setTokenStream("");
+      setStepLogs([]);
+    }
+
     const wsUrl = `ws://localhost:8000/api/v1/ws/workflows/${workflowId}`;
     setStatus(reconnectAttemptsRef.current > 0 ? "reconnecting" : "connecting");
 
@@ -104,8 +115,6 @@ export function useWorkflowStream(workflowId: string | null) {
 
   useEffect(() => {
     if (workflowId) {
-      setTokenStream("");
-      setStepLogs([]);
       reconnectAttemptsRef.current = 0;
       connect();
     }

@@ -50,7 +50,7 @@ export function LogConsole() {
         <div className="p-3 font-mono text-xs space-y-1.5 flex-1 overflow-y-auto bg-black/60">
           {executionLogs.length === 0 ? (
             <p className="text-slate-500 text-[11px] italic">
-              No execution logs yet. Click "Execute Flow" above to start multi-agent orchestration.
+              No execution logs yet. Click &quot;Execute Flow&quot; above to start multi-agent orchestration.
             </p>
           ) : (
             executionLogs.map((log) => (

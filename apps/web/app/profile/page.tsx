@@ -16,11 +16,12 @@ import {
   Layers,
   Loader2,
 } from "lucide-react";
+import type { User } from "@supabase/supabase-js";
 import { GoogleIcon, GithubAuthIcon } from "@/components/common/AuthIcons";
 
 export default function ProfilePage() {
   const router = useRouter();
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [loggingOut, setLoggingOut] = useState(false);
 

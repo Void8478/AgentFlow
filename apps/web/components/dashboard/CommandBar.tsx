@@ -83,10 +83,6 @@ export function CommandBar({ isOpen, onClose }: CommandBarProps) {
   );
 
   useEffect(() => {
-    setSelectedIndex(0);
-  }, [query]);
-
-  useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!isOpen) return;
 
@@ -134,7 +130,10 @@ export function CommandBar({ isOpen, onClose }: CommandBarProps) {
               type="text"
               autoFocus
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => {
+                  setQuery(e.target.value);
+                  setSelectedIndex(0);
+                }}
               placeholder="Type a command or search flows, agents, and actions..."
               aria-label="Search command menu items"
               className="w-full bg-transparent text-sm text-white placeholder:text-slate-400 focus:outline-none"
@@ -156,7 +155,7 @@ export function CommandBar({ isOpen, onClose }: CommandBarProps) {
           >
             {filteredActions.length === 0 ? (
               <p className="p-4 text-center text-xs text-slate-400">
-                No commands matching "{query}"
+                No commands matching &quot;{query}&quot;
               </p>
             ) : (
               filteredActions.map((item, idx) => (
